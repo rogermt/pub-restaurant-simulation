@@ -1,27 +1,66 @@
+from typing import List, Dict, Any
 
 class Config:
+    """
+    Configuration settings for the fast food restaurant simulation.
+
+    Attributes:
+        interarrival_time (int): The average interarrival time for customers.
+        kitchen_service_time (int): The average service time for customers at the kitchen station.
+        counter_service_time (int): The average service time for customers at the counter station.
+        kitchen_servers (int): The number of servers at the kitchen station.
+        counter_servers (int): The number of servers at the counter station.
+        kitchen_queue_size (int): The maximum queue size at the kitchen station.
+        counter_queue_size (int): The maximum queue size at the counter station.
+        warm_up_time (int): The warm-up time for the simulation.
+        sim_duration (int): The duration of the simulation.
+        num_runs (int): The number of simulation runs to perform.
+        kitchen_wait_times (List[int]): List of kitchen wait times for each simulation run.
+        kitchen_queue_lengths (List[int]): List of kitchen queue lengths for each simulation run.
+        counter_wait_times (List[int]): List of counter wait times for each simulation run.
+        counter_queue_lengths (List[int]): List of counter queue lengths for each simulation run.
+    """
+
     # interarrival time for customers
-    interarrival_time = 5
+    interarrival_time: int = 5
     
     # mean service times for each station (in minutes)
-    kitchen_service_time = 3
-    counter_service_time = 1
+    kitchen_service_time: int = 3
+    counter_service_time: int = 1
     
     # number of servers at each station
-    kitchen_servers = 2
-    counter_servers = 1
+    kitchen_servers: int = 2
+    counter_servers: int = 1
     
     # maximum queue size for each station
-    kitchen_queue_size = 5
-    counter_queue_size = 3
+    kitchen_queue_size: int = 5
+    counter_queue_size: int = 3
     
     # simulation run metrics
-    warm_up_time = 60
-    sim_duration = 480
-    num_runs = 50
+    warm_up_time: int = 60
+    sim_duration: int = 480
+    num_runs: int = 50
     
     # placeholders to track wait times and queue lengths
-    kitchen_wait_times = []
-    kitchen_queue_lengths = []
-    counter_wait_times = []
-    counter_queue_lengths = []
+    kitchen_wait_times: List[float] = []
+    kitchen_queue_lengths: List[int] = []
+    counter_wait_times: List[float] = []
+    counter_queue_lengths: List[int] = []
+
+    @classmethod
+    def get_config(cls) -> Dict[str, Any]:
+        """
+        Returns the configuration values as a dictionary.
+        """
+        return {
+            'interarrival_time': cls.interarrival_time,
+            'kitchen_service_time': cls.kitchen_service_time,
+            'counter_service_time': cls.counter_service_time,
+            'kitchen_servers': cls.kitchen_servers,
+            'counter_servers': cls.counter_servers,
+            'kitchen_queue_size': cls.kitchen_queue_size,
+            'counter_queue_size': cls.counter_queue_size,
+            'warm_up_time': cls.warm_up_time,
+            'sim_duration': cls.sim_duration,
+            'num_runs': cls.num_runs
+        }
