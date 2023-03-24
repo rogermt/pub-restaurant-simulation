@@ -8,7 +8,7 @@ setup(
     description='Simulates a fast food restaurant in a pub',
     long_description='A detailed description of your project',
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/pub-restaurant-simulation',
+    url='https://github.com/rogermt/pub-restaurant-simulation',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 3 - Alpha',
