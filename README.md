@@ -18,7 +18,7 @@ This is a simulation of a fast-food restaurant in a UK pub, implemented using th
 - SimPy
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/<username>/pub-restaurant-simulation.git`
+1. Clone the repository: `git clone https://github.com/rogermt/pub-restaurant-simulation.git`
 2. Install the dependencies: `pip install -r requirements.txt`
 
 ## Usage
