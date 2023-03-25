@@ -55,6 +55,14 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "simpy"
+version = "4.0.1"
+description = "Event discrete, process based simulation for Python."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "urllib3"
 version = "1.26.15"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -70,7 +78,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "0e87270b29fa6bcbc8cf3bd1a5f51da5f987080f8ac2575996f00244beb0e470"
+content-hash = "0203a7eda57c7082dc0708f827b1f2dc098f00b8331fbb7f30f7a4a8760bd0aa"
 
 [metadata.files]
 certifi = []
@@ -78,4 +86,5 @@ charset-normalizer = []
 discord-webhook = []
 idna = []
 requests = []
+simpy = []
 urllib3 = []
