@@ -3,6 +3,7 @@ import unittest
 
 from typing import Any, List
 from src.customer import Customer
+from src.config import Config
 
 
 class MockOrderTaker(simpy.Resource):
@@ -53,8 +54,8 @@ class TestCustomer(unittest.TestCase):
 
         self.metrics = MockMetrics()
         self.restaurant.metrics = self.metrics
-
-        self.customer = Customer(self.env, 1, self.restaurant, 0)
+        config = Config()
+        self.customer = Customer(self.env, 1, self.restaurant, 0, config)
 
 
     def test_place_order(self):

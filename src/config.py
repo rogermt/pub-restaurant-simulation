@@ -19,6 +19,9 @@ class Config:
         kitchen_queue_lengths (List[int]): List of kitchen queue lengths for each simulation run.
         counter_wait_times (List[int]): List of counter wait times for each simulation run.
         counter_queue_lengths (List[int]): List of counter queue lengths for each simulation run.
+        mean_order_time (float): The average time it takes a customer to place an order.
+        mean_cook_time (float): The average time it takes to cook a customer's food.
+        mean_serve_time (float): The average time it takes to serve a customer's food.
     """
 
     # interarrival time for customers
@@ -47,6 +50,11 @@ class Config:
     counter_wait_times: List[float] = []
     counter_queue_lengths: List[int] = []
 
+    # mean times for each step of customer service
+    mean_order_time: float = 2
+    mean_cook_time: float = 5
+    mean_service_time: float = 4
+
     @classmethod
     def get_config(cls) -> Dict[str, Any]:
         """
@@ -62,5 +70,8 @@ class Config:
             'counter_queue_size': cls.counter_queue_size,
             'warm_up_time': cls.warm_up_time,
             'sim_duration': cls.sim_duration,
-            'num_runs': cls.num_runs
+            'num_runs': cls.num_runs,
+            'mean_order_time': cls.mean_order_time,
+            'mean_cook_time': cls.mean_cook_time,
+            'mean_service_time': cls.mean_service_time
         }
