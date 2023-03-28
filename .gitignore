@@ -133,6 +133,7 @@ dmypy.json
 .env
 .db/
 __pycache__/
+.breakpoints
 
 # Python-specific files
 *.pyc
