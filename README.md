@@ -1,8 +1,7 @@
 # Pub Restaurant Simulation
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## Overview
+docs## Overview
 This is a simulation of a fast-food restaurant in a UK pub, implemented using the SimPy simulation library in Python. The simulation models customer arrivals, order placement, food preparation, and order delivery. The goal of the simulation is to optimize the restaurant's performance by minimizing customer wait times and maximizing the number of customers served.
 
 ## Features

@@ -2,11 +2,13 @@ import unittest
 from simpy import Environment, Resource
 from typing import Any, List
 from src.config import Config
-from src.customer import InHouseCustomer
+from src.customer import InHouseCustomer, FoodAppCustomer
+
 
 class MockOrderTaker(Resource):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
+
 
 class MockCook(Resource):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -16,6 +18,7 @@ class MockCook(Resource):
 class MockServer(Resource):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
+
 
 class MockMetrics:
     def __init__(self):
@@ -38,6 +41,14 @@ class MockRestaurant:
         self.cook = cook
         self.server = server
         self.metrics = metrics
+
+    def notify_driver_arrival(self):
+        pass
+
+
+class MockDriver(Resource):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
 
 
 class TestInHouseCustomer(unittest.TestCase):
@@ -113,5 +124,93 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertIsNotNone(self.customer.service_time)
         self.assertTrue(self.customer.service_time >= 0)
         self.assertTrue(self.customer.service_time >= self.customer.order_time)
+
+
+
+class TestFoodAppCustomer(unittest.TestCase):
+
+    def setUp(self):
+        self.env = Environment()
+        mean_order_time = 5
+        mean_cook_time = 5
+        mean_service_time = 5
+        self.restaurant = MockRestaurant(self.env, mean_order_time, mean_cook_time, mean_service_time, MockOrderTaker(self.env,3), MockCook(self.env, 3), MockServer(self.env, 3), MockMetrics())
+        self.config = Config()
+        self.metrics = MockMetrics()
+        self.driver = MockDriver(self.env)
+
+        self.customer = FoodAppCustomer(self.env, 1, self.restaurant, 0, self.config, self.driver)
+        
+    def test_place_order(self):
+        # create a customer instance
+        customer = self.customer
+        # customer place order
+        self.env.process(customer.place_order())
+        self.assertTrue(customer.order_time is None)
+       
+        self.env.run()
+
+        self.assertIsNotNone(customer.order_time)
+        self.assertTrue(customer.order_time >= 0)
+        self.assertTrue(customer.order_time >= customer.arrival_time)
+   
+
+    def test_wait_for_food(self):
+        # create a customer instance
+        customer = self.customer
+
+        # customer place order
+        self.env.process(customer.place_order())
+        self.env.run()
+
+        # customer wait for food
+        self.env.process(customer.wait_for_food())
+
+        self.assertTrue(customer.cook_time is None)
+
+        self.env.run()
+
+        self.assertIsNotNone(customer.cook_time)
+        self.assertTrue(customer.cook_time >= customer.order_time)
+
+    def test_schedule_pickup(self):
+        # create a customer instance
+        customer = self.customer
+
+        # customer place order and wait for food
+        self.env.process(customer.place_order())
+        self.env.process(customer.wait_for_food())
+        self.env.run()
+
+        # customer schedules a pickup time
+        pickup_time = 20
+        self.env.process(customer.schedule_pickup(pickup_time))
+
+        self.assertTrue(customer.pickup_time is None)
+
+        self.env.run()
+
+        self.assertIsNotNone(customer.pickup_time)
+        self.assertTrue(customer.pickup_time >= customer.cook_time)
+        self.assertTrue(customer.pickup_time == pickup_time)
+
+    def test_leave(self):
+        # create a customer instance
+        customer = self.customer
+
+        # customer place order, wait for food, schedule pickup, and leave
+        self.env.process(customer.place_order())
+        self.env.process(customer.wait_for_food())
+        self.env.run()
+
+        pickup_time = 20
+        self.env.process(customer.schedule_pickup(pickup_time))
+        self.env.run()
+
+        customer.leave()
+
+        self.assertEqual(len(self.restaurant.metrics.customers), 1)
+        self.assertEqual(self.restaurant.metrics.customers[0].id, customer.id)
+
         
     
