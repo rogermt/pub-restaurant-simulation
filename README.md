@@ -1,31 +1,26 @@
 # Pub Restaurant Simulation
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-docs## Overview
-This is a simulation of a fast-food restaurant in a UK pub, implemented using the SimPy simulation library in Python. The simulation models customer arrivals, order placement, food preparation, and order delivery. The goal of the simulation is to optimize the restaurant's performance by minimizing customer wait times and maximizing the number of customers served.
+## Overview
 
-## Features
-- Models customer arrivals, order placement, food preparation, and order delivery
-- Optimizes restaurant performance by minimizing customer wait times and maximizing the number of customers served
-- Easy-to-use command-line interface
-- Modular code structure for easy customization and extension
-- Comprehensive test suite for confident code changes
-- Well-documented codebase
+This is a simulation of a fast-food restaurant in a UK pub, implemented using the SimPy simulation library in Python. SimPy is a powerful discrete-event simulation library that is well-suited for modeling and simulating complex systems. Discrete event simulations are used to model systems where events occur at discrete points in time, rather than continuously. In this simulation, customer arrivals, order placement, food preparation, and order delivery are modeled as discrete events. The simulation aims to optimize the restaurant's performance by minimizing customer wait times and maximizing the number of customers served.
+
+The simulation comes with an easy-to-use command-line interface, a modular code structure for easy customization and extension, a comprehensive test suite for confident code changes, and a well-documented codebase.
 
 ## Requirements
+
 - Python 3.x
 - SimPy
 
 ## Installation
+
 1. Clone the repository: `git clone https://github.com/rogermt/pub-restaurant-simulation.git`
 2. Install the dependencies: `pip install -r requirements.txt`
 
 ## Usage
-Run the simulation from the command line with:
 
-python main.py
-
-
+1. Navigate to the root directory of the project.
+2. Run `python main.py` to start the simulation.
 
 The simulation parameters can be modified by editing the `config.py` file.
 
