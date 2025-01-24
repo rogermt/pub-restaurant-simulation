@@ -1,8 +1,11 @@
 import unittest
-from simpy import Environment, Resource
 from typing import Any, List
+
+from simpy import Environment, Resource
+
 from src.config import Config
-from src.customer import InHouseCustomer, FoodAppCustomer
+from src.customer import FoodAppCustomer, InHouseCustomer
+from src.driver import Driver
 
 
 class MockOrderTaker(Resource):
@@ -13,7 +16,7 @@ class MockOrderTaker(Resource):
 class MockCook(Resource):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        
+
 
 class MockServer(Resource):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -32,12 +35,22 @@ class MockMetrics:
 
 
 class MockRestaurant:
-    def __init__(self, env: Environment, mean_order_time: float, mean_cook_time: float, mean_service_time: float, order_taker: Resource, cook: Resource, server: Resource, metrics: "MockMetrics" ) -> None:
+    def __init__(
+        self,
+        env: Environment,
+        mean_order_time: float,
+        mean_cook_time: float,
+        mean_service_time: float,
+        order_taker: Resource,
+        cook: Resource,
+        server: Resource,
+        metrics: "MockMetrics",
+    ) -> None:
         self.env = env
         self.mean_order_time: float = mean_order_time
         self.mean_cook_time: float = mean_cook_time
         self.mean_service_time: float = mean_service_time
-        self.order_taker = order_taker  
+        self.order_taker = order_taker
         self.cook = cook
         self.server = server
         self.metrics = metrics
@@ -46,9 +59,9 @@ class MockRestaurant:
         pass
 
 
-class MockDriver(Resource):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+class MockDriver(Driver):
+    def __init__(self, env: Environment) -> None:
+        super().__init__(env, Config())  # Pass required arguments for Driver
 
 
 class TestInHouseCustomer(unittest.TestCase):
@@ -57,7 +70,16 @@ class TestInHouseCustomer(unittest.TestCase):
         mean_order_time = 5
         mean_cook_time = 5
         mean_service_time = 5
-        self.restaurant = MockRestaurant(self.env, mean_order_time, mean_cook_time, mean_service_time, MockOrderTaker(self.env,3), MockCook(self.env, 3), MockServer(self.env, 3), MockMetrics())
+        self.restaurant = MockRestaurant(
+            self.env,
+            mean_order_time,
+            mean_cook_time,
+            mean_service_time,
+            MockOrderTaker(self.env, 3),
+            MockCook(self.env, 3),
+            MockServer(self.env, 3),
+            MockMetrics(),
+        )
         self.metrics = MockMetrics()
         self.config = Config()
 
@@ -67,12 +89,12 @@ class TestInHouseCustomer(unittest.TestCase):
         # create a customer instance
         customer = self.customer
 
-        #customer place order
+        # customer place order
         self.env.process(customer.place_order())
         self.assertTrue(customer.order_time is None)
         self.env.run()
 
-        #ensuring that the order was placed after the customer's arrival.
+        # ensuring that the order was placed after the customer's arrival.
         self.assertIsNotNone(customer.order_time)
         self.assertTrue(customer.order_time >= 0)
         self.assertTrue(customer.order_time >= customer.arrival_time)
@@ -84,7 +106,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertIsNotNone(self.customer.cook_time)
         self.assertTrue(self.customer.cook_time >= 0)
         self.assertTrue(self.customer.cook_time >= self.customer.arrival_time)
-    
 
     def test_receive_food(self):
         self.env.process(self.customer.receive_food())
@@ -92,7 +113,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertIsNotNone(self.customer.service_time)
         self.assertTrue(self.customer.service_time >= 0)
         self.assertTrue(self.customer.service_time >= self.customer.arrival_time)
-        
 
     def test_leave(self):
         self.customer.leave()
@@ -105,7 +125,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertIsNotNone(self.customer.order_time)
         self.assertTrue(self.customer.order_time >= 0)
         self.assertTrue(self.customer.order_time >= self.customer.arrival_time)
-        
 
     def test_wait_for_food_with_request(self):
         self.env.process(self.customer.place_order())
@@ -114,7 +133,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertIsNotNone(self.customer.cook_time)
         self.assertTrue(self.customer.cook_time >= 0)
         self.assertTrue(self.customer.cook_time >= self.customer.order_time)
-        
 
     def test_receive_food_with_request(self):
         self.env.process(self.customer.place_order())
@@ -126,7 +144,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertTrue(self.customer.service_time >= self.customer.order_time)
 
 
-
 class TestFoodAppCustomer(unittest.TestCase):
 
     def setUp(self):
@@ -134,26 +151,36 @@ class TestFoodAppCustomer(unittest.TestCase):
         mean_order_time = 5
         mean_cook_time = 5
         mean_service_time = 5
-        self.restaurant = MockRestaurant(self.env, mean_order_time, mean_cook_time, mean_service_time, MockOrderTaker(self.env,3), MockCook(self.env, 3), MockServer(self.env, 3), MockMetrics())
+        self.restaurant = MockRestaurant(
+            self.env,
+            mean_order_time,
+            mean_cook_time,
+            mean_service_time,
+            MockOrderTaker(self.env, 3),
+            MockCook(self.env, 3),
+            MockServer(self.env, 3),
+            MockMetrics(),
+        )
         self.config = Config()
         self.metrics = MockMetrics()
         self.driver = MockDriver(self.env)
 
-        self.customer = FoodAppCustomer(self.env, 1, self.restaurant, 0, self.config, self.driver)
-        
+        self.customer = FoodAppCustomer(
+            self.env, 1, self.restaurant, 0, self.config, self.driver
+        )
+
     def test_place_order(self):
         # create a customer instance
         customer = self.customer
         # customer place order
         self.env.process(customer.place_order())
         self.assertTrue(customer.order_time is None)
-       
+
         self.env.run()
 
         self.assertIsNotNone(customer.order_time)
         self.assertTrue(customer.order_time >= 0)
         self.assertTrue(customer.order_time >= customer.arrival_time)
-   
 
     def test_wait_for_food(self):
         # create a customer instance
@@ -211,6 +238,3 @@ class TestFoodAppCustomer(unittest.TestCase):
 
         self.assertEqual(len(self.restaurant.metrics.customers), 1)
         self.assertEqual(self.restaurant.metrics.customers[0].id, customer.id)
-
-        
-    

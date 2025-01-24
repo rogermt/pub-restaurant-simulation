@@ -1,10 +1,16 @@
-from abc import ABC, abstractmethod
-import simpy
 import random
-import datetime
-from typing import Optional
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Generator, Optional
+
+import simpy
+
 from src.config import Config
 from src.driver import Driver
+
+if TYPE_CHECKING:
+    from src.restaurant import Restaurant  # Import from actual module when available
+else:
+    from src.restaurant_stub import Restaurant  # Import the stub class
 
 
 class Customer(ABC):
@@ -26,15 +32,22 @@ class Customer(ABC):
 
     Methods:
     --------
-    place_order() -> simpy.events.Event:
+    place_order() Generator[simpy.events.Event, None, None]:
         Sends an order request to the restaurant's order taker.
-    wait_for_food() -> simpy.events.Event:
+    wait_for_food() Generator[simpy.events.Event, None, None]:
         Sends a request for food to the cook and waits for it to be prepared.
     leave() -> None:
         Records the customer's departure from the restaurant and adds them to the restaurant's metrics.
     """
-    
-    def __init__(self, env: simpy.Environment, id: int, restaurant: "Restaurant", arrival_time: float, config: Config):
+
+    def __init__(
+        self,
+        env: simpy.Environment,
+        id: int,
+        restaurant: "Restaurant",
+        arrival_time: float,
+        config: Config,
+    ):
         """
         Initializes a new instance of the Customer class.
 
@@ -57,24 +70,24 @@ class Customer(ABC):
         self.arrival_time = arrival_time
         self.config = config
 
-        self.order_time = None
-        self.cook_time = None
-        self.service_time = None
+        self.order_time: Optional[float] = None
+        self.cook_time: Optional[float] = None
+        self.service_time: Optional[float] = None
 
     @abstractmethod
-    def place_order(self) -> simpy.events.Event:
+    def place_order(self) -> Generator[simpy.events.Event, None, None]:
         """
         Abstract method for placing an order with the restaurant's order taker.
 
         Returns:
         --------
-        simpy.events.Event:
+        Generator[simpy.events.Event, None, None]:
             A SimPy event representing the order request.
         """
         pass
 
     @abstractmethod
-    def wait_for_food(self) -> simpy.events.Event:
+    def wait_for_food(self) -> Generator[simpy.events.Event, None, None]:
         """
         Abstract method for sending a request for food to the cook and waiting for it to be prepared.
 
@@ -91,7 +104,6 @@ class Customer(ABC):
         Abstract method for recording the customer's departure from the restaurant and adding them to the restaurant's metrics.
         """
         pass
-
 
 
 class InHouseCustomer(Customer):
@@ -119,25 +131,33 @@ class InHouseCustomer(Customer):
 
     Methods:
     --------
-    place_order() -> simpy.events.Event
+    place_order() Generator[simpy.events.Event, None, None]
         Places an order with the restaurant's order taker.
-    wait_for_food() -> simpy.events.Event
+    wait_for_food() Generator[simpy.events.Event, None, None]
         Waits for the cook to prepare the customer's food.
-    receive_food() -> simpy.events.Event
+    receive_food() Generator[simpy.events.Event, None, None]
         Serves the food to the customer.
     leave() -> None
         Adds the customer to the restaurant's metrics.
     """
-    def __init__(self, env: simpy.Environment, id: int, restaurant: "Restaurant", arrival_time: float, config: Config):
+
+    def __init__(
+        self,
+        env: simpy.Environment,
+        id: int,
+        restaurant: "Restaurant",
+        arrival_time: float,
+        config: Config,
+    ):
         super().__init__(env, id, restaurant, arrival_time, config)
-    
-    def place_order(self) -> simpy.events.Event:
+
+    def place_order(self) -> Generator[simpy.events.Event, None, None]:
         """
         Places an order with the restaurant's order taker.
 
         Returns:
         --------
-        order : simpy.events.Event
+        order : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the order is taken by the restaurant's order taker.
         """
         # Send an order request to the restaurant's order taker
@@ -145,63 +165,73 @@ class InHouseCustomer(Customer):
         order_taker = self.restaurant.order_taker
         with order_taker.request() as order:
             yield order
-            
+
             # Record the time the order was placed
             print("Recording the time the order was placed...")
             self.order_time = self.env.now
 
             # Wait for the order to be taken
             print("Waiting for the order to be taken...")
-            yield self.env.timeout(random.uniform(self.config.mean_order_time-2, self.config.mean_order_time+2))
-            
+            yield self.env.timeout(
+                random.uniform(
+                    self.config.mean_order_time - 2, self.config.mean_order_time + 2
+                )
+            )
+
             # Release the order taker resource
             print("Releasing the order taker resource...")
             self.restaurant.order_taker.release(order)
 
-       
-        
-    def wait_for_food(self) -> simpy.events.Event:
+    def wait_for_food(self) -> Generator[simpy.events.Event, None, None]:
         """
         Waits for the cook to prepare the customer's food.
 
         Returns:
         --------
-        food : simpy.events.Event
+        food : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the cook finishes preparing the customer's food.
         """
         # Send a request for food to the cook
         cook = self.restaurant.cook
         with cook.request() as food:
             yield food
-            
+
             # Record the time the cook started cooking the customer's food
             self.cook_time = self.env.now
 
             # Wait for the cook to prepare the food
-            yield self.env.timeout(random.uniform(self.config.mean_cook_time-2, self.config.mean_order_time+2))
+            yield self.env.timeout(
+                random.uniform(
+                    self.config.mean_cook_time - 2, self.config.mean_order_time + 2
+                )
+            )
 
             # Release the cook resource
             self.restaurant.cook.release(food)
-    
-    def receive_food(self) -> simpy.events.Event:
+
+    def receive_food(self) -> Generator[simpy.events.Event, None, None]:
         """
         Serves the food to the customer.
 
         Returns:
         --------
-        serve : simpy.events.Event
+        serve : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the customer is served their food.
         """
         server = self.restaurant.server
         with server.request() as req:
             yield req
-        
+
             # Serve the food to the customer
-            yield self.env.timeout(random.uniform(self.config.mean_service_time-2, self.config.mean_order_time+2))
-    
+            yield self.env.timeout(
+                random.uniform(
+                    self.config.mean_service_time - 2, self.config.mean_order_time + 2
+                )
+            )
+
             # Record the time the customer received their food
             self.service_time = self.env.now
-    
+
     def leave(self) -> None:
         """
         Adds the customer to the restaurant's metrics.
@@ -229,7 +259,15 @@ class FoodAppCustomer(Customer):
         leave(): Adds the customer to the restaurant's metrics.
     """
 
-    def __init__(self, env: simpy.Environment, id: int, restaurant: "Restaurant", arrival_time: float, config: Config, driver: Driver):
+    def __init__(
+        self,
+        env: simpy.Environment,
+        id: int,
+        restaurant: "Restaurant",
+        arrival_time: float,
+        config: Config,
+        driver: Driver,
+    ):
         """
         Initializes a new instance of the FoodAppCustomer class.
 
@@ -257,7 +295,11 @@ class FoodAppCustomer(Customer):
             self.order_time = self.env.now
 
             # Wait for the order to be taken
-            yield self.env.timeout(random.uniform(self.config.mean_order_time-2, self.config.mean_order_time+2))
+            yield self.env.timeout(
+                random.uniform(
+                    self.config.mean_order_time - 2, self.config.mean_order_time + 2
+                )
+            )
 
             # Release the order taker resource
             self.restaurant.order_taker.release(order)
@@ -270,46 +312,31 @@ class FoodAppCustomer(Customer):
         cook = self.restaurant.cook
         with cook.request() as food:
             yield food
-            
+
             # Record the time the cook started cooking the customer's food
             self.cook_time = self.env.now
 
             # Wait for the cook to prepare the food
-            yield self.env.timeout(random.uniform(self.config.mean_cook_time-2, self.config.mean_order_time+2))
+            yield self.env.timeout(
+                random.uniform(
+                    self.config.mean_cook_time - 2, self.config.mean_order_time + 2
+                )
+            )
 
             # Release the cook resource
             self.restaurant.cook.release(food)
 
-
-    def schedule_pickup(self, pickup_time: datetime.datetime):
-        """
-        Schedules a pickup event for when the food is ready.
-    
-        Args:
-            pickup_time (datetime.datetime): The scheduled time for the driver to pick up their food.
-        """
+    def schedule_pickup(self, pickup_time: float):
         self.pickup_time = pickup_time
-    
-        # Wait for the cook to finish preparing the food
+
         while self.env.now < self.cook_time:
             yield self.env.timeout(1)
-    
-        # Release the driver resource
-        driver = self.driver
-        with driver.request() as req:
-            yield req
-    
-        # Wait for the scheduled pickup time
-        pickup_time_timedelta = datetime.timedelta(seconds=pickup_time)
-        now_time_timedelta = datetime.timedelta(seconds=self.env.now)
-        wait_time = max(pickup_time_timedelta - now_time_timedelta, datetime.timedelta(0))
-        yield self.env.timeout(wait_time.total_seconds())
-    
-        # Release the driver resource
-        self.driver.release(req)
-    
 
-    
+        with self.driver.request() as req:  # "with" handles release automatically
+            yield req
+            wait_time = max(pickup_time - self.env.now, 0)
+            yield self.env.timeout(wait_time)
+
     def leave(self):
         """
         Adds the customer to the restaurant's metrics.

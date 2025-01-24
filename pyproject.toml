@@ -1,16 +1,48 @@
 [tool.poetry]
-name = "repl_nix_pub-restaurant-simulation"
+name = "pub-restaurant-simulation"
 version = "0.1.0"
-description = ""
-authors = ["Replit user <<>>"]
+description = "Simulates a fast-food restaurant workflow in a UK pub"
+authors = ["Roger Taylor roger_taylor@ymail.com"]
+# Add this section 👇
+packages = [
+    { include = "src" }
+]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
 discord-webhook = "^1.1.0"
 simpy = "^4.0.1"
+pre-commit = "^4.1.0"
+mypy = "^1.14.1"
+setuptools = "^68.0.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+black = "^24.3.0"
+flake8 = "^7.0.0"
+isort = "^5.13.2"
+mypy = "^1.9.0"
+
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+# Black & isort configurations
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+)/
+'''
+
+[tool.isort]
+profile = "black"
