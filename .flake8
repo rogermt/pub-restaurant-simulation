@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 88
+exclude = .git,__pycache__,venv,docs,dist
+
+# Ignore rules conflicting with Black's style
+ignore =
+    E203
+    W503
+    E501
