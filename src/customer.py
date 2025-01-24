@@ -81,7 +81,7 @@ class Customer(ABC):
 
         Returns:
         --------
-        simpy.events.Event:
+        Generator[simpy.events.Event, None, None]:
             A SimPy event representing the order request.
         """
         pass
@@ -157,7 +157,7 @@ class InHouseCustomer(Customer):
 
         Returns:
         --------
-        order : simpy.events.Event
+        order : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the order is taken by the restaurant's order taker.
         """
         # Send an order request to the restaurant's order taker
@@ -188,7 +188,7 @@ class InHouseCustomer(Customer):
 
         Returns:
         --------
-        food : simpy.events.Event
+        food : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the cook finishes preparing the customer's food.
         """
         # Send a request for food to the cook
@@ -215,7 +215,7 @@ class InHouseCustomer(Customer):
 
         Returns:
         --------
-        serve : simpy.events.Event
+        serve : Generator[simpy.events.Event, None, None]
             The event that gets triggered when the customer is served their food.
         """
         server = self.restaurant.server
