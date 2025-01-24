@@ -5,6 +5,7 @@ from simpy import Environment, Resource
 
 from src.config import Config
 from src.customer import FoodAppCustomer, InHouseCustomer
+from src.driver import Driver
 
 
 class MockOrderTaker(Resource):
@@ -58,9 +59,9 @@ class MockRestaurant:
         pass
 
 
-class MockDriver(Resource):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+class MockDriver(Driver):
+    def __init__(self, env: Environment) -> None:
+        super().__init__(env, Config())  # Pass required arguments for Driver
 
 
 class TestInHouseCustomer(unittest.TestCase):
