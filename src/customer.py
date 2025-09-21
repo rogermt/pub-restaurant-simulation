@@ -178,9 +178,7 @@ class InHouseCustomer(Customer):
                 )
             )
 
-            # Release the order taker resource
-            print("Releasing the order taker resource...")
-            self.restaurant.order_taker.release(order)
+
 
     def wait_for_food(self) -> Generator[simpy.events.Event, None, None]:
         """
@@ -202,12 +200,10 @@ class InHouseCustomer(Customer):
             # Wait for the cook to prepare the food
             yield self.env.timeout(
                 random.uniform(
-                    self.config.mean_cook_time - 2, self.config.mean_order_time + 2
+                    self.config.mean_cook_time - 2, self.config.mean_cook_time + 2
                 )
             )
 
-            # Release the cook resource
-            self.restaurant.cook.release(food)
 
     def receive_food(self) -> Generator[simpy.events.Event, None, None]:
         """
@@ -225,7 +221,7 @@ class InHouseCustomer(Customer):
             # Serve the food to the customer
             yield self.env.timeout(
                 random.uniform(
-                    self.config.mean_service_time - 2, self.config.mean_order_time + 2
+                    self.config.mean_service_time - 2, self.config.mean_service_time + 2
                 )
             )
 
@@ -301,8 +297,6 @@ class FoodAppCustomer(Customer):
                 )
             )
 
-            # Release the order taker resource
-            self.restaurant.order_taker.release(order)
 
     def wait_for_food(self):
         """
@@ -319,12 +313,10 @@ class FoodAppCustomer(Customer):
             # Wait for the cook to prepare the food
             yield self.env.timeout(
                 random.uniform(
-                    self.config.mean_cook_time - 2, self.config.mean_order_time + 2
+                    self.config.mean_cook_time - 2, self.config.mean_cook_time + 2
                 )
             )
 
-            # Release the cook resource
-            self.restaurant.cook.release(food)
 
     def schedule_pickup(self, pickup_time: float):
         self.pickup_time = pickup_time

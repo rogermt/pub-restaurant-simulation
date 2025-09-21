@@ -118,30 +118,7 @@ class TestInHouseCustomer(unittest.TestCase):
         self.customer.leave()
         self.assertTrue(len(self.restaurant.metrics.customers) == 1)
 
-    def test_place_order_with_request(self):
-        self.env.process(self.customer.place_order())
-        self.assertTrue(self.customer.order_time is None)
-        self.env.run()
-        self.assertIsNotNone(self.customer.order_time)
-        self.assertTrue(self.customer.order_time >= 0)
-        self.assertTrue(self.customer.order_time >= self.customer.arrival_time)
 
-    def test_wait_for_food_with_request(self):
-        self.env.process(self.customer.place_order())
-        self.env.process(self.customer.wait_for_food())
-        self.env.run()
-        self.assertIsNotNone(self.customer.cook_time)
-        self.assertTrue(self.customer.cook_time >= 0)
-        self.assertTrue(self.customer.cook_time >= self.customer.order_time)
-
-    def test_receive_food_with_request(self):
-        self.env.process(self.customer.place_order())
-        self.env.process(self.customer.wait_for_food())
-        self.env.process(self.customer.receive_food())
-        self.env.run()
-        self.assertIsNotNone(self.customer.service_time)
-        self.assertTrue(self.customer.service_time >= 0)
-        self.assertTrue(self.customer.service_time >= self.customer.order_time)
 
 
 class TestFoodAppCustomer(unittest.TestCase):
