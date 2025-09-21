@@ -119,8 +119,6 @@ class TestInHouseCustomer(unittest.TestCase):
         self.assertTrue(len(self.restaurant.metrics.customers) == 1)
 
 
-
-
 class TestFoodAppCustomer(unittest.TestCase):
 
     def setUp(self):

@@ -178,8 +178,6 @@ class InHouseCustomer(Customer):
                 )
             )
 
-
-
     def wait_for_food(self) -> Generator[simpy.events.Event, None, None]:
         """
         Waits for the cook to prepare the customer's food.
@@ -203,7 +201,6 @@ class InHouseCustomer(Customer):
                     self.config.mean_cook_time - 2, self.config.mean_cook_time + 2
                 )
             )
-
 
     def receive_food(self) -> Generator[simpy.events.Event, None, None]:
         """
@@ -297,7 +294,6 @@ class FoodAppCustomer(Customer):
                 )
             )
 
-
     def wait_for_food(self):
         """
         Sends a request for food to the kitchen and waits for the food to be prepared.
@@ -316,7 +312,6 @@ class FoodAppCustomer(Customer):
                     self.config.mean_cook_time - 2, self.config.mean_cook_time + 2
                 )
             )
-
 
     def schedule_pickup(self, pickup_time: float):
         self.pickup_time = pickup_time
