@@ -1,5 +1,7 @@
 from typing import List
+
 import simpy
+
 from src.config import Config
 
 

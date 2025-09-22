@@ -1,4 +1,5 @@
 import unittest
+
 from simpy import Environment
 
 from src.config import Config

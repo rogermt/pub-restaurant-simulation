@@ -6,7 +6,6 @@ import simpy
 
 from src.config import Config
 from src.driver import Driver
-
 from src.restaurant import Restaurant
 
 
