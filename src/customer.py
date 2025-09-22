@@ -157,17 +157,14 @@ class InHouseCustomer(Customer):
             The event that gets triggered when the order is taken by the restaurant's order taker.
         """
         # Send an order request to the restaurant's order taker
-        print("Sending order request to order taker...")
         order_taker = self.restaurant.order_taker
         with order_taker.request() as order:
             yield order
 
             # Record the time the order was placed
-            print("Recording the time the order was placed...")
             self.order_time = self.env.now
 
             # Wait for the order to be taken
-            print("Waiting for the order to be taken...")
             yield self.env.timeout(
                 random.uniform(
                     self.config.mean_order_time - 2, self.config.mean_order_time + 2
