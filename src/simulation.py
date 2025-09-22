@@ -11,6 +11,28 @@ from .driver import Driver
 from .restaurant import Restaurant
 
 
+class SimulationConfig:
+    """Configuration class for simulation parameters."""
+    
+    def __init__(self, duration: int = 480, interarrival_time: float = 5.0, 
+                 kitchen_servers: int = 2, counter_servers: int = 1, num_runs: int = 1,
+                 driver_capacity: int = 10):
+        self.duration = duration
+        self.sim_duration = duration  # Alias for compatibility
+        self.interarrival_time = interarrival_time
+        self.kitchen_servers = kitchen_servers
+        self.counter_servers = counter_servers
+        self.num_runs = num_runs
+        self.driver_capacity = driver_capacity
+        
+        # Additional attributes for compatibility with existing code
+        self.kitchen_service_time = 3
+        self.counter_service_time = 1
+        self.mean_order_time = 2
+        self.mean_cook_time = 5
+        self.mean_service_time = 4
+
+
 class SimulationRunner:
     """
     Main simulation runner that orchestrates the restaurant simulation.
