@@ -1,6 +1,6 @@
 import random
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import Generator, Optional
 
 import simpy
 
