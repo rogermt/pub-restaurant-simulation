@@ -7,10 +7,7 @@ import simpy
 from src.config import Config
 from src.driver import Driver
 
-if TYPE_CHECKING:
-    from src.restaurant import Restaurant  # Import from actual module when available
-else:
-    from src.restaurant_stub import Restaurant  # Import the stub class
+from src.restaurant import Restaurant
 
 
 class Customer(ABC):
