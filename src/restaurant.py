@@ -32,18 +32,18 @@ class Metrics:
     def get_customer_count(self) -> int:
         """Get the total number of customers served."""
         return len(self.customers)
-    
+
     def get_customer_breakdown(self) -> dict:
         """Get breakdown of customers by type."""
-        from .customer import InHouseCustomer, FoodAppCustomer
-        
+        from .customer import FoodAppCustomer, InHouseCustomer
+
         inhouse_count = sum(1 for c in self.customers if isinstance(c, InHouseCustomer))
         foodapp_count = sum(1 for c in self.customers if isinstance(c, FoodAppCustomer))
-        
+
         return {
-            'inhouse_customers': inhouse_count,
-            'foodapp_customers': foodapp_count,
-            'total_customers': len(self.customers)
+            "inhouse_customers": inhouse_count,
+            "foodapp_customers": foodapp_count,
+            "total_customers": len(self.customers),
         }
 
     def get_average_wait_time(self) -> float:
@@ -126,6 +126,6 @@ class Restaurant:
         return {
             "total_customers": self.metrics.get_customer_count(),
             "average_wait_time": self.metrics.get_average_wait_time(),
-            "inhouse_customers": breakdown['inhouse_customers'],
-            "foodapp_customers": breakdown['foodapp_customers'],
+            "inhouse_customers": breakdown["inhouse_customers"],
+            "foodapp_customers": breakdown["foodapp_customers"],
         }
