@@ -10,11 +10,11 @@ import sys
 import unittest
 from pathlib import Path
 
-from src.config import Config
-from src.simulation import SimulationRunner
-
 # Add src directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
+
+from src.config import Config
+from src.simulation import SimulationRunner
 
 
 def run_tests():
