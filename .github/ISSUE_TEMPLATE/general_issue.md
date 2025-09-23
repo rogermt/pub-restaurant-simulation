@@ -3,7 +3,7 @@
 ______________________________________________________________________
 
 name: General Issue about: Track tasks, bugs, or enhancements for your project.
-title: "[Category] Short Description" labels: '' assignees: 'your-username'
+title: "\[Category\] Short Description" labels: '' assignees: 'your-username'
 
 ______________________________________________________________________
 
@@ -13,11 +13,11 @@ ______________________________________________________________________
 
 ### **Type of Issue**
 
-- [ ] Bug
-- [ ] Feature
-- [ ] Refactor
-- [ ] Documentation
-- [ ] Maintenance
+- \[ \] Bug
+- \[ \] Feature
+- \[ \] Refactor
+- \[ \] Documentation
+- \[ \] Maintenance
 
 ### **Steps to Reproduce (for bugs)**
 

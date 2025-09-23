@@ -1,16 +1,16 @@
-import argparse
-import sys
-import unittest
-
-from src.config import Config
-from src.simulation import SimulationRunner
-
 """
 Main entry point for the restaurant simulation.
 
 This script provides a command-line interface for running the restaurant simulation
 with configurable parameters.
 """
+
+import argparse
+import sys
+import unittest
+
+from src.config import Config
+from src.simulation import SimulationRunner
 
 
 def run_tests():

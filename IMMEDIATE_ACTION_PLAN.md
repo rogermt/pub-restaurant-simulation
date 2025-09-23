@@ -100,21 +100,21 @@ ______________________________________________________________________
 
 ### **Before Making Changes**
 
-- [ ] Backup current phase3 branch: `git branch phase3-backup`
-- [ ] Ensure you're on the correct branch: `git branch --show-current`
-- [ ] Verify tests pass before linting: `python main.py test`
+- \[ \] Backup current phase3 branch: `git branch phase3-backup`
+- \[ \] Ensure you're on the correct branch: `git branch --show-current`
+- \[ \] Verify tests pass before linting: `python main.py test`
 
 ### **After Linting Fixes**
 
-- [ ] Run tests again to ensure no functionality broken
-- [ ] Check that simulation still works: `python main.py simulate --help`
-- [ ] Verify output is clean and professional
+- \[ \] Run tests again to ensure no functionality broken
+- \[ \] Check that simulation still works: `python main.py simulate --help`
+- \[ \] Verify output is clean and professional
 
 ### **Before Merge**
 
-- [ ] Create backup of main branch: `git branch main-backup`
-- [ ] Ensure phase3 branch is up to date with latest fixes
-- [ ] Run full test suite on merged code
+- \[ \] Create backup of main branch: `git branch main-backup`
+- \[ \] Ensure phase3 branch is up to date with latest fixes
+- \[ \] Run full test suite on merged code
 
 ______________________________________________________________________
 
@@ -122,18 +122,18 @@ ______________________________________________________________________
 
 ### **Linting Fix Success**
 
-- [ ] `black --check src/ tests/` returns no files to reformat
-- [ ] `isort --check-only src/ tests/` shows no import issues
-- [ ] `flake8 src/ tests/` shows no linting errors
-- [ ] CI/CD pipeline shows green status
-- [ ] All 26 tests still pass
+- \[ \] `black --check src/ tests/` returns no files to reformat
+- \[ \] `isort --check-only src/ tests/` shows no import issues
+- \[ \] `flake8 src/ tests/` shows no linting errors
+- \[ \] CI/CD pipeline shows green status
+- \[ \] All 26 tests still pass
 
 ### **Merge Success**
 
-- [ ] Phase 3 functionality available on main branch
-- [ ] `python main.py simulate --help` works
-- [ ] `python main.py test` shows 26 tests passing
-- [ ] No merge conflicts or broken functionality
+- \[ \] Phase 3 functionality available on main branch
+- \[ \] `python main.py simulate --help` works
+- \[ \] `python main.py test` shows 26 tests passing
+- \[ \] No merge conflicts or broken functionality
 
 ______________________________________________________________________
 

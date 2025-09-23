@@ -7,13 +7,12 @@ repos:
       language: system
       types: [markdown]
 
-
-    - id: mdformat
-      name: mdformat
-      entry: poetry run mdformat
-      language: system
-      types: [markdown]
-      args: ["--wrap", "80"]
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.16
+    hooks:
+      - id: mdformat
+        args: ["--wrap", "80"]
+        types: [markdown]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

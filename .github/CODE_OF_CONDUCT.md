@@ -34,7 +34,7 @@ an individual is officially representing the project in public spaces.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the project maintainer(s) at [your-email@example.com]. All
+reported to the project maintainer(s) at \[your-email@example.com\]. All
 complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
