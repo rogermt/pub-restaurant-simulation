@@ -8,10 +8,6 @@ with configurable parameters.
 import argparse
 import sys
 import unittest
-from pathlib import Path
-
-# Add src directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from src.config import Config
 from src.simulation import SimulationRunner
