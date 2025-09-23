@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List, Union
 
 import simpy
 
@@ -13,10 +13,10 @@ class Metrics:
         customers (List): List of customers who have completed their journey
     """
 
-    def __init__(self):
-        self.customers: List = []
+    def __init__(self) -> None:
+        self.customers: List[Any] = []
 
-    def add_customer(self, customer) -> None:
+    def add_customer(self, customer: Any) -> None:
         """
         Add a customer to the metrics tracking.
 
@@ -33,7 +33,7 @@ class Metrics:
         """Get the total number of customers served."""
         return len(self.customers)
 
-    def get_customer_breakdown(self) -> dict:
+    def get_customer_breakdown(self) -> Dict[str, int]:
         """Get breakdown of customers by type."""
         from .customer import FoodAppCustomer, InHouseCustomer
 
@@ -82,7 +82,7 @@ class Restaurant:
         metrics (Metrics): Object to track customer and performance metrics
     """
 
-    def __init__(self, env: simpy.Environment, config: Config):
+    def __init__(self, env: simpy.Environment, config: Config) -> None:
         """
         Initialize the restaurant with staff resources and metrics tracking.
 
@@ -115,7 +115,7 @@ class Restaurant:
         """Reset all restaurant metrics."""
         self.metrics.reset()
 
-    def get_metrics_summary(self) -> dict:
+    def get_metrics_summary(self) -> Dict[str, Union[int, float]]:
         """
         Get a summary of restaurant performance metrics.
 

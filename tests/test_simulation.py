@@ -5,6 +5,7 @@ Tests for the simulation runner and related functionality.
 import unittest
 from unittest.mock import patch
 
+from src.config import Config
 from src.restaurant import Restaurant
 from src.simulation import SimulationConfig, SimulationRunner
 
@@ -44,7 +45,8 @@ class TestSimulationRunner(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.config = SimulationConfig(duration=60, interarrival_time=30.0)
+        self.sim_config = SimulationConfig(duration=60, interarrival_time=30.0)
+        self.config = Config()
         self.runner = SimulationRunner(self.config)
 
     def test_initialization(self):

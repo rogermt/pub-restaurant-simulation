@@ -2,8 +2,9 @@
 Restaurant simulation runner with customer generation and metrics reporting.
 """
 
+import logging
 import random
-from typing import Generator, List, Tuple
+from typing import Dict, Generator, List, Optional, Tuple, Union
 
 import simpy
 
@@ -11,6 +12,9 @@ from .config import Config
 from .customer import FoodAppCustomer, InHouseCustomer
 from .driver import Driver
 from .restaurant import Restaurant
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class SimulationConfig:
@@ -24,21 +28,32 @@ class SimulationConfig:
         counter_servers: int = 1,
         num_runs: int = 1,
         driver_capacity: int = 10,
-    ):
-        self.duration = duration
-        self.sim_duration = duration  # Alias for compatibility
-        self.interarrival_time = interarrival_time
-        self.kitchen_servers = kitchen_servers
-        self.counter_servers = counter_servers
-        self.num_runs = num_runs
-        self.driver_capacity = driver_capacity
+    ) -> None:
+        """
+        Initialize simulation configuration.
+
+        Args:
+            duration: Simulation duration in minutes
+            interarrival_time: Average time between customer arrivals
+            kitchen_servers: Number of kitchen servers
+            counter_servers: Number of counter servers
+            num_runs: Number of simulation runs to execute
+            driver_capacity: Maximum number of drivers available
+        """
+        self.duration: int = duration
+        self.sim_duration: int = duration  # Alias for compatibility
+        self.interarrival_time: float = interarrival_time
+        self.kitchen_servers: int = kitchen_servers
+        self.counter_servers: int = counter_servers
+        self.num_runs: int = num_runs
+        self.driver_capacity: int = driver_capacity
 
         # Additional attributes for compatibility with existing code
-        self.kitchen_service_time = 3
-        self.counter_service_time = 1
-        self.mean_order_time = 2
-        self.mean_cook_time = 5
-        self.mean_service_time = 4
+        self.kitchen_service_time: int = 3
+        self.counter_service_time: int = 1
+        self.mean_order_time: int = 2
+        self.mean_cook_time: int = 5
+        self.mean_service_time: int = 4
 
 
 class SimulationRunner:
@@ -48,15 +63,15 @@ class SimulationRunner:
     Handles customer arrival generation, simulation execution, and metrics collection.
     """
 
-    def __init__(self, config: Config = None):
+    def __init__(self, config: Optional[Config] = None) -> None:
         """Initialize the simulation runner with configuration."""
-        self.config = config or Config()
-        self.restaurant = None
-        self.env = None
+        self.config: Config = config or Config()
+        self.restaurant: Optional[Restaurant] = None
+        self.env: Optional[simpy.Environment] = None
 
     def customer_generator(
         self, env: simpy.Environment, restaurant: Restaurant, driver_pool: Driver
-    ) -> Generator:
+    ) -> Generator[simpy.Event, None, None]:
         """
         Generate customers arriving at the restaurant over time.
 
@@ -74,6 +89,7 @@ class SimulationRunner:
             arrival_time = env.now
 
             # Randomly choose customer type (70% in-house, 30% food app)
+            customer: Union[InHouseCustomer, FoodAppCustomer]
             if random.random() < 0.7:
                 customer = InHouseCustomer(
                     env, customer_id, restaurant, arrival_time, self.config
@@ -90,7 +106,9 @@ class SimulationRunner:
                 env.process(self._foodapp_customer_journey(customer))
             customer_id += 1
 
-    def _inhouse_customer_journey(self, customer: InHouseCustomer) -> Generator:
+    def _inhouse_customer_journey(
+        self, customer: InHouseCustomer
+    ) -> Generator[simpy.Event, None, None]:
         """Process the complete journey for an in-house customer."""
         try:
             yield customer.env.process(customer.place_order())
@@ -98,9 +116,11 @@ class SimulationRunner:
             yield customer.env.process(customer.receive_food())
             customer.leave()
         except Exception as e:
-            print(f"Error in customer {customer.id} journey: {e}")
+            logger.error(f"Error in customer {customer.id} journey: {e}", exc_info=True)
 
-    def _foodapp_customer_journey(self, customer: FoodAppCustomer) -> Generator:
+    def _foodapp_customer_journey(
+        self, customer: FoodAppCustomer
+    ) -> Generator[simpy.Event, None, None]:
         """Process the complete journey for a food app customer."""
         try:
             yield customer.env.process(customer.place_order())
@@ -110,11 +130,11 @@ class SimulationRunner:
             yield customer.env.process(customer.schedule_pickup(pickup_time))
             customer.leave()
         except Exception as e:
-            print(f"Error in customer {customer.id} journey: {e}")
+            logger.error(f"Error in customer {customer.id} journey: {e}", exc_info=True)
 
     def run_simulation(
-        self, duration: int = None, verbose: bool = False
-    ) -> Tuple[Restaurant, dict]:
+        self, duration: Optional[int] = None, verbose: bool = False
+    ) -> Tuple[Restaurant, Dict[str, Union[int, float]]]:
         """
         Run a single simulation for the specified duration.
 
@@ -136,14 +156,14 @@ class SimulationRunner:
         env.process(self.customer_generator(env, restaurant, driver_pool))
 
         if verbose:
-            print(f"Starting simulation for {duration} minutes...")
-            print(
+            logger.info(f"Starting simulation for {duration} minutes...")
+            logger.info(
                 f"Restaurant capacity: {self.config.kitchen_servers} kitchen, {self.config.counter_servers} counter"
             )
-            print(
+            logger.info(
                 f"Customer arrival rate: every {self.config.interarrival_time} minutes on average"
             )
-            print("-" * 60)
+            logger.info("-" * 60)
 
         # Run the simulation
         env.run(until=duration)
@@ -157,8 +177,8 @@ class SimulationRunner:
         return restaurant, metrics
 
     def run_multiple_simulations(
-        self, num_runs: int = None, verbose: bool = False
-    ) -> List[dict]:
+        self, num_runs: Optional[int] = None, verbose: bool = False
+    ) -> List[Dict[str, Union[int, float]]]:
         """
         Run multiple simulation runs and collect aggregate statistics.
 
@@ -170,15 +190,15 @@ class SimulationRunner:
             List of metrics dictionaries from each run
         """
         num_runs = num_runs or self.config.num_runs
-        all_metrics = []
+        all_metrics: List[Dict[str, Union[int, float]]] = []
 
         if verbose:
-            print(f"Running {num_runs} simulation runs...")
-            print("=" * 60)
+            logger.info(f"Running {num_runs} simulation runs...")
+            logger.info("=" * 60)
 
         for run_num in range(1, num_runs + 1):
             if verbose and run_num % 10 == 0:
-                print(f"Completed {run_num}/{num_runs} runs...")
+                logger.info(f"Completed {run_num}/{num_runs} runs...")
 
             _, metrics = self.run_simulation(verbose=False)
             metrics["run_number"] = run_num
@@ -189,7 +209,9 @@ class SimulationRunner:
 
         return all_metrics
 
-    def _collect_metrics(self, restaurant: Restaurant, duration: int) -> dict:
+    def _collect_metrics(
+        self, restaurant: Restaurant, duration: int
+    ) -> Dict[str, Union[int, float]]:
         """Collect simulation metrics from the restaurant."""
         metrics = restaurant.get_metrics_summary()
 
@@ -225,7 +247,7 @@ class SimulationRunner:
             return 0.0
         return min(100.0, (total_service_time / (duration * num_servers)) * 100)
 
-    def _print_simulation_results(self, metrics: dict):
+    def _print_simulation_results(self, metrics: Dict[str, Union[int, float]]) -> None:
         """Print detailed results from a single simulation run."""
         print("\n" + "=" * 60)
         print("SIMULATION RESULTS")
@@ -252,7 +274,9 @@ class SimulationRunner:
         print(f"  Food app customers: {metrics.get('foodapp_customers', 0)}")
         print("=" * 60)
 
-    def _print_aggregate_results(self, all_metrics: List[dict]):
+    def _print_aggregate_results(
+        self, all_metrics: List[Dict[str, Union[int, float]]]
+    ) -> None:
         """Print aggregate statistics from multiple simulation runs."""
         if not all_metrics:
             return
