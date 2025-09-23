@@ -1,4 +1,20 @@
 repos:
+  - repo: local
+    hooks:
+    - id: pymarkdown
+      name: pymarkdownlnt
+      entry: poetry run pymarkdown --config .pymarkdown/config.json scan
+      language: system
+      types: [markdown]
+
+
+    - id: mdformat
+      name: mdformat
+      entry: poetry run mdformat
+      language: system
+      types: [markdown]
+      args: ["--wrap", "80"]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:

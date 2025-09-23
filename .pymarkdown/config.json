@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "blanks-around-headings": { "enabled": true },
+    "no-duplicate-heading": { "enabled": false },
+    "no-trailing-punctuation": { "enabled": false },
+    "line-length": { "enabled": false },
+    "inline-html": { "enabled": false },
+    "no-emphasis-as-heading": { "enabled": false }
+  }
+}
