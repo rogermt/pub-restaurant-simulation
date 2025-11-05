@@ -32,9 +32,21 @@ confident code changes, and a well-documented codebase.
 ## Usage
 
 1. Navigate to the root directory of the project.
-1. Run `python main.py` to start the simulation.
+1. Install dependencies: `pip install -r requirements.txt`
+1. Run the simulation: `python src/simulation.py`
 
-The simulation parameters can be modified by editing the `config.py` file.
+**Note on Import Structure**: The simulation has been updated to use absolute imports instead of relative imports for better compatibility. This means:
+- The code imports modules using `from config import Config` instead of `from .config import Config`
+- This change was made to resolve import issues when running the simulation directly
+- All source files in the `src/` directory have been updated accordingly
+
+The simulation parameters can be modified by editing the `config.py` file. Key parameters include:
+- `duration`: Simulation duration in minutes (default: 480)
+- `interarrival_time`: Average time between customer arrivals
+- `kitchen_servers`: Number of kitchen servers
+- `counter_servers`: Number of counter servers
+- `kitchen_service_time`: Average time to prepare food
+- `counter_service_time`: Average time to serve customer
 
 ## Contributing
 

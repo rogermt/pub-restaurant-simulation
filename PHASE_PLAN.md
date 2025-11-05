@@ -83,44 +83,55 @@ ______________________________________________________________________
 
 ### **PHASE 5: Advanced Features & Analytics**
 
-**Priority: MEDIUM** | **Effort: 12 points** | **Duration: 4-5 days**
+**Priority: HIGH** | **Effort: 14 points** | **Duration: 5-6 days**
 
 #### Tasks:
 
-1. **Advanced Analytics & Reporting** (MEDIUM - 4 points)
+1. **Enhanced Configuration Management** (HIGH - 5 points)
+
+   - YAML/JSON configuration file support with realistic defaults
+   - Environment variable integration for deployment flexibility
+   - Configuration validation with sensible defaults
+   - Profile-based configurations (peak/off-peak hours)
+   - Adjustable service times (kitchen: 3-8 minutes, counter: 1-3 minutes)
+   - Variable customer arrival rates based on time of day
+   - Resource capacity configuration (kitchen servers, counter staff)
+   - Different parameters for customer types (in-house vs food app)
+
+1. **Advanced Analytics & Reporting** (HIGH - 4 points)
 
    - Statistical analysis (confidence intervals, variance)
    - Performance metrics (throughput, utilization rates)
    - Export capabilities (CSV, JSON, PDF reports)
    - Trend analysis across multiple runs
-
-1. **Enhanced Configuration Management** (MEDIUM - 3 points)
-
-   - YAML/JSON configuration file support
-   - Environment variable integration
-   - Configuration validation and defaults
-   - Profile-based configurations (peak/off-peak)
+   - Validation of metric tracking to ensure accuracy
+   - Comparative analysis between different simulation scenarios
 
 1. **Logging & Monitoring System** (MEDIUM - 3 points)
 
-   - Structured logging with levels
+   - Structured logging with levels (DEBUG, INFO, WARNING, ERROR)
    - Performance monitoring and profiling
-   - Debug mode with detailed tracing
+   - Debug mode with detailed tracing of customer journeys
    - Log rotation and management
+   - Resource utilization tracking with timestamps
+   - Error logging for simulation anomalies
 
-1. **Data Persistence Layer** (MEDIUM - 2 points)
+1. **Data Persistence Layer** (LOW - 2 points)
 
    - SQLite database for simulation results
-   - Historical data tracking
+   - Historical data tracking with metadata
    - Result comparison capabilities
    - Data export/import functionality
+   - Storage of simulation parameters with results
 
 #### Risks & Mitigations:
 
+- **Risk**: Configuration complexity overwhelming users
+  - **Mitigation**: Comprehensive documentation, sensible defaults, validation
 - **Risk**: Performance degradation with advanced features
   - **Mitigation**: Profiling, optional features, lazy loading
-- **Risk**: Configuration complexity
-  - **Mitigation**: Sensible defaults, validation, documentation
+- **Risk**: Inaccurate metric tracking leading to misleading results
+  - **Mitigation**: Thorough testing, validation against known scenarios
 
 ______________________________________________________________________
 

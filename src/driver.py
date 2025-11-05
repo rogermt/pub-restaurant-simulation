@@ -1,6 +1,6 @@
 import simpy
 
-from src.config import Config
+from config import Config
 
 
 class Driver(simpy.Resource):

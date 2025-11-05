@@ -4,9 +4,9 @@ from typing import Generator, Optional
 
 import simpy
 
-from src.config import Config
-from src.driver import Driver
-from src.restaurant import Restaurant
+from config import Config
+from driver import Driver
+from restaurant import Restaurant
 
 
 class Customer(ABC):

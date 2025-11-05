@@ -8,10 +8,10 @@ from typing import Dict, Generator, List, Optional, Tuple, Union
 
 import simpy
 
-from .config import Config
-from .customer import FoodAppCustomer, InHouseCustomer
-from .driver import Driver
-from .restaurant import Restaurant
+from config import Config
+from customer import FoodAppCustomer, InHouseCustomer
+from driver import Driver
+from restaurant import Restaurant
 
 # Configure logging
 logger = logging.getLogger(__name__)

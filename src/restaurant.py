@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Union
 
 import simpy
 
-from src.config import Config
+from config import Config
 
 
 class Metrics:
