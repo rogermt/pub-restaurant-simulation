@@ -27,13 +27,13 @@ confident code changes, and a well-documented codebase.
 
 1. Clone the repository:
    `git clone https://github.com/rogermt/pub-restaurant-simulation.git`
-1. Install the dependencies: `pip install -r requirements.txt`
+2. Install the dependencies: `pip install -r requirements.txt`
 
 ## Usage
 
 1. Navigate to the root directory of the project.
-1. Install dependencies: `pip install -r requirements.txt`
-1. Run the simulation: `python src/simulation.py`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run the simulation: `python src/simulation.py`
 
 **Note on Import Structure**: The simulation has been updated to use absolute imports instead of relative imports for better compatibility. This means:
 - The code imports modules using `from src.config import Config` instead of `from .config import Config`
