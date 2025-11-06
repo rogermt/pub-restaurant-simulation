@@ -36,7 +36,7 @@ confident code changes, and a well-documented codebase.
 1. Run the simulation: `python src/simulation.py`
 
 **Note on Import Structure**: The simulation has been updated to use absolute imports instead of relative imports for better compatibility. This means:
-- The code imports modules using `from config import Config` instead of `from .config import Config`
+- The code imports modules using `from src.config import Config` instead of `from .config import Config`
 - This change was made to resolve import issues when running the simulation directly
 - All source files in the `src/` directory have been updated accordingly
 
